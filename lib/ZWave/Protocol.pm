@@ -12,7 +12,7 @@ use Moo;
 has device           => ( is => 'rw', default => sub { "/dev/ttyUSB0" } );
 has error            => ( is => 'rw' );
 has port             => ( is => 'rw' );
-has read_timeout_ms  => ( is => 'rw', default => sub { "500" } );
+has read_timeout_ms  => ( is => 'rw', default => sub { "200" } );
 has ack_timeout_ms   => ( is => 'rw', default => sub { "5000" } );
 
 sub connect {
@@ -46,7 +46,6 @@ sub checksum {
       # x-or all elements but the first one
     for my $byte ( splice @bytes, 1, @bytes - 1 ) {
         $checksum ^= $byte;
-        printf "cr=%x\n", $checksum;
     }
 
     return $checksum;
@@ -113,7 +112,9 @@ sub ack_recv {
     DEBUG "Waiting for ACK";
 
     my $packet = $self->packet_recv( );
-    my @bytes = unpack "C*", $self->packet_recv;
+    my @bytes = unpack "C*", $packet;
+
+    DEBUG "ACK bytes: ", $self->bytes_dump( @bytes );
 
     if( @bytes == 0 ) {
         INFO "Received nothing";
@@ -122,6 +123,7 @@ sub ack_recv {
 
     if( defined $bytes[ 0 ] and $bytes[ 0 ] == 6 ) {
         INFO "Received ACK";
+        $self->ack_send();
         return 1;
     }
 
@@ -175,9 +177,14 @@ sub packet_recv {
     my $sofar = "";
     while( 1 ) {
 	my( $count, $bytes ) = $self->port->read( 1 );
+        DEBUG "Read $count bytes: ", $self->packet_dump( $bytes );
 	$sofar .= $bytes;
-	last unless( $count );
+        if( !$count ) {
+            last;
+        }
     }
+
+    DEBUG "Read packet: ", $self->packet_dump( $sofar );
 
     return $sofar;
 }
