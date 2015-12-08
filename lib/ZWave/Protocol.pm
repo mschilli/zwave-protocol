@@ -1,13 +1,11 @@
-###########################################
-# ZWave::Protocol -- Protocol helpers
-# 2015, Mike Schilli <m@perlmeister.com>
-###########################################
 package ZWave::Protocol;
 use strict;
 use warnings;
 use Log::Log4perl qw(:easy);
 use Device::SerialPort;
 use Moo;
+
+our $VERSION = "0.01";
 
 has device           => ( is => 'rw', default => sub { "/dev/ttyUSB0" } );
 has error            => ( is => 'rw' );
@@ -253,39 +251,61 @@ USB port.
 
 Constructor, takes the device path to the plugged in Z-Wave controller.
 
-=item C<connect( device => "/dev/ttyUSB0" )>
+=item C<connect()>
 
 Initialize a connection with the Z-Wave controller plugged into the USB port.
 
-=item C<transmit( $payload_byte1, $payload_byte2, ... )>
+=item C<payload_transmit( $payload_byte1, $payload_byte2, ... )>
 
 A combination of C<send() and C<recv_ack()>.
 
-=item C<send( $payload_byte1, $payload_byte2, ... )>
+=item C<payload_send( $payload_byte1, $payload_byte2, ... )>
 
 Wrap the given payload bytes into a package and send the result over to
 the USB port.
 
-=item C<recv_ack()>
+=item C<payload_recv()>
+
+Wait for a payload packet to arrive and receive it.
+
+=item C<ack_recv()>
 
 Wait for an ACK to arrive from the recipient of the previous C<send()>.
+
+=item C<ack_send()>
+
+Send an ACK back to acknowledge receiving a packet.
 
 =item C<request_packet( $payload_byte1, $payload_byte2, ... )>
 
 Packs a sequence of payload bytes into a request packet, by adding a request
 header, packet length, and a trailing checksum. For example, 
 
-      0x13, 0x06, 0x03, 0x20, 0x01, 255, 0x05
+                0x00, 0x13, 0x03, 0x03, 0x20, 0x01, 0x00, 0x05
 
 becomes
 
-      0x01, 0x09, 0x00, 0x13, 0x06, 0x03, 0x20, 0x01, 255, 0x05, [$checksum]
+    0x01, 0x09, 0x00, 0x13, 0x03, 0x03, 0x20, 0x01, 0x00, 0x05, 0xc1
+
+with C<0x01> being the packet header, C<0x09> being the packet length,
+and C<0xc1> being the checksum, which is calculated over all bytes
+except the first one (see the ZWave protocol spec for details).
 
 =item C<checksum( $byte1, $byte2, ... )>
 
 Calculate the Z-Wave checksum required at the end of a package.
 
 =back
+
+=head2 ERROR HANDLING
+
+If one of the methods above returns a non-true value, the underlying
+error can be obtained by calling
+
+    print $zwave->error();
+
+Additional insight can be obtained by bumping up the Log4perl level
+to $DEBUG in the C<CWave::Protocol> or root categories.
 
 =head1 LEGALESE
 
