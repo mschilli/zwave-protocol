@@ -20,6 +20,11 @@ sub connect {
 
     my $port = Device::SerialPort->new( $self->device, 1 );
 
+    if( !defined $port ) {
+        ERROR "Can't connect to ", $self->device;
+        return undef;
+    }
+
     $port->baudrate( 115200 );
     $port->databits( 8 );
     $port->parity( "none" );
