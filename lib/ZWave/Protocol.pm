@@ -5,7 +5,7 @@ use Log::Log4perl qw(:easy);
 use Device::SerialPort;
 use Moo;
 
-our $VERSION = "0.01";
+our $VERSION = "0.02";
 
 has device           => ( is => 'rw', default => sub { "/dev/ttyUSB0" } );
 has error            => ( is => 'rw' );

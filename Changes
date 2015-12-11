@@ -1,5 +1,8 @@
 ######################################################################
 Revision history for Perl extension ZWave::Protocol
 
+0.02  2015/12/10
+    (ms) removed MYMETA*
+
 0.01  2015/12/07
-      * Where it all began.
+    (ms) Where it all began.
