@@ -5,7 +5,7 @@ use Log::Log4perl qw(:easy);
 use Device::SerialPort;
 use Moo;
 
-our $VERSION = "0.02";
+our $VERSION = "0.03";
 
 has device           => ( is => 'rw', default => sub { "/dev/ttyUSB0" } );
 has error            => ( is => 'rw' );
@@ -231,12 +231,10 @@ ZWave::Protocol - Protocol helpers for Z-Wave communication
     my $node_id = 3;
     my $state   = 255; # "on"
 
-    $zw->transmit( 0x13, $node_id, 
+    $zw->payload_transmit( 0x13, $node_id, 
                    0x03, 0x20, 0x01, $state, 0x05 );
 
 =head1 DESCRIPTION
-
-TODO: Retries
 
 ZWave::Protocol helps with the low-level details of the Z-Wave protocol, and
 offers support for packing packets with length headers and checksums, as well
@@ -257,7 +255,7 @@ Initialize a connection with the Z-Wave controller plugged into the USB port.
 
 =item C<payload_transmit( $payload_byte1, $payload_byte2, ... )>
 
-A combination of C<send() and C<recv_ack()>.
+A combination of C<send()> and C<recv_ack()>.
 
 =item C<payload_send( $payload_byte1, $payload_byte2, ... )>
 
@@ -306,6 +304,14 @@ error can be obtained by calling
 
 Additional insight can be obtained by bumping up the Log4perl level
 to $DEBUG in the C<CWave::Protocol> or root categories.
+
+=head2 TODO List
+
+=over 4
+
+=item Retries
+
+=back
 
 =head1 LEGALESE
 

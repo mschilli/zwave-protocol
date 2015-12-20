@@ -1,5 +1,5 @@
 ######################################################################
-    ZWave::Protocol 0.01
+    ZWave::Protocol 0.03
 ######################################################################
 
 NAME
@@ -14,12 +14,10 @@ SYNOPSIS
         my $node_id = 3;
         my $state   = 255; # "on"
 
-        $zw->transmit( 0x13, $node_id, 
+        $zw->payload_transmit( 0x13, $node_id, 
                        0x03, 0x20, 0x01, $state, 0x05 );
 
 DESCRIPTION
-    TODO: Retries
-
     ZWave::Protocol helps with the low-level details of the Z-Wave protocol,
     and offers support for packing packets with length headers and
     checksums, as well as connecting, sending, and receiving to the Z-Wave
@@ -35,7 +33,7 @@ METHODS
         USB port.
 
     "payload_transmit( $payload_byte1, $payload_byte2, ... )"
-        A combination of "send() and "recv_ack()"."
+        A combination of "send()" and "recv_ack()".
 
     "payload_send( $payload_byte1, $payload_byte2, ... )"
         Wrap the given payload bytes into a package and send the result over
@@ -77,6 +75,9 @@ METHODS
     Additional insight can be obtained by bumping up the Log4perl level to
     $DEBUG in the "CWave::Protocol" or root categories.
 
+  TODO List
+    Retries
+
 LEGALESE
     Copyright 2015 by Mike Schilli, all rights reserved. This program is
     free software, you can redistribute it and/or modify it under the same
@@ -84,11 +85,4 @@ LEGALESE
 
 AUTHOR
     2015, Mike Schilli <m@perlmeister.com>
-
-POD ERRORS
-    Hey! The above document had some coding errors, which are explained
-    below:
-
-    Around line 260:
-        Unterminated C<...> sequence
 
