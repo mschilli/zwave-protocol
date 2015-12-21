@@ -7,7 +7,7 @@ use ExtUtils::MakeMaker;
 my $meta_merge = {
     META_MERGE => {
         resources => {
-            repository  => 'http://github.com/mschilli/zwave-protocol-perl.git',
+            repository  => 'https://github.com/mschilli/zwave-protocol.git',
         },
     }
 };
