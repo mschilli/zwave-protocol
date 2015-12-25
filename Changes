@@ -1,6 +1,9 @@
 ######################################################################
 Revision history for Perl extension ZWave::Protocol
 
+0.04  2015/12/24
+    (ms) Mohammad S Anwar fixed the repo link.
+
 0.03  2015/12/20
     (ms) Doc fixes
 
